@@ -37,12 +37,12 @@ type MQCredential struct {
 }
 
 func NewMQCredential(accessKeyId string, accessKeySecret string, securityToken string) *MQCredential {
-	if accessKeyId == "" {
-		panic("mq_go_sdk: access key id is empty")
-	}
-	if accessKeySecret == "" {
-		panic("mq_go_sdk: access key secret is empty")
-	}
+	// if accessKeyId == "" {
+	// 	panic("mq_go_sdk: access key id is empty")
+	// }
+	// if accessKeySecret == "" {
+	// 	panic("mq_go_sdk: access key secret is empty")
+	// }
 	mqCredential := new(MQCredential)
 	mqCredential.accessKeySecret = accessKeySecret
 	mqCredential.accessKeyId = accessKeyId

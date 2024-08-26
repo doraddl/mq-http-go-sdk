@@ -59,9 +59,10 @@ func NewAliyunMQClientWithTimeout(endpoint, accessKeyId, accessKeySecret, securi
 		panic("mq_go_sdk: endpoint is empty")
 	}
 
-	//credential := NewMQCredential(accessKeyId, accessKeySecret, securityToken)
+	credential := NewMQCredential(accessKeyId, accessKeySecret, securityToken)
 
-	cli := new(AliyunMQClient) 
+	cli := new(AliyunMQClient)
+	cli.credential = credential
 	cli.timeout = timeout
 
 	if accessKeyId != "" {
@@ -196,11 +197,13 @@ func (p *AliyunMQClient) Send0(method Method, headers map[string]string, message
 	headers[CONTENT_MD5] = base64.StdEncoding.EncodeToString([]byte(strMd5))
 	headers[DATE] = time.Now().UTC().Format(http.TimeFormat)
 
-	if authHeader, e := p.authorization(method, headers, fmt.Sprintf("/%s", resource)); e != nil {
-		err = ErrGeneralAuthHeaderFailed.New(errors.Params{"err": e})
-		return nil, err
-	} else {
-		headers[AUTHORIZATION] = authHeader
+	if len(p.credential.AccessKeyId()) > 0 {
+		if authHeader, e := p.authorization(method, headers, fmt.Sprintf("/%s", resource)); e != nil {
+			err = ErrGeneralAuthHeaderFailed.New(errors.Params{"err": e})
+			return nil, err
+		} else {
+			headers[AUTHORIZATION] = authHeader
+		}
 	}
 
 	if len(p.credential.SecurityToken()) > 0 {
