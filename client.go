@@ -59,11 +59,15 @@ func NewAliyunMQClientWithTimeout(endpoint, accessKeyId, accessKeySecret, securi
 		panic("mq_go_sdk: endpoint is empty")
 	}
 
-	credential := NewMQCredential(accessKeyId, accessKeySecret, securityToken)
+	//credential := NewMQCredential(accessKeyId, accessKeySecret, securityToken)
 
-	cli := new(AliyunMQClient)
-	cli.credential = credential
+	cli := new(AliyunMQClient) 
 	cli.timeout = timeout
+
+	if accessKeyId != "" {
+		credential := NewMQCredential(accessKeyId, accessKeySecret, securityToken)
+		cli.credential = credential
+	}
 
 	var err error
 	if cli.endpoint, err = neturl.Parse(endpoint); err != nil {
